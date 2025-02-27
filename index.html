@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+  </head>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      border: none;
+      background-color: black;
+      outline: none;
+    }
+    h1 {
+      color: white;
+      font-size: 1.5rem;
+      text-align: center;
+      text-decoration: underline;
+      font-weight: bold;
+    } 
+    .container {
+      width: 80vw;
+      heigh: 50vh;
+      display: flex;
+      justify-content: center;
+      margin: 5em auto;
+      gap: 2%;
+    }
+    .input-container {
+      width: 30vw;
+      position: relative;
+    }
+    input, button {
+      border: 1px solid white;
+      font-size: 1rem;
+      border-radius: 0.5em;
+      color: white;
+      padding: 0.3em 0.3em 0.3em 0.5em;
+      transition: all 0.3s linear;
+    }
+    input {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: white;
+      color: black;
+      font-weight: bold;
+    }
+    img {
+      position: absolute;
+      width: 1.3rem;
+      font-weight: bold;
+      top: 50%;
+      right: 2%;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+    p {
+      display: none;
+      color: white;
+      font-size: 0.8rem;
+      position: absolute;
+      bottom: -80%;
+      right: 0;
+      font-weight: bold;
+    }
+  </style>
+  <body>
+    <h1>URL Shortener</h1> 
+    <div class="container">
+      <div class="input-container">
+        <input type="text" placeholder="Enter url here....">
+        <img src="/copy.svg" onclick="copy()">
+        <p>URL copied</p>
+      </div>
+      <button onclick="submit()">Shorten</button>
+    </div>
+  </body>
+  <script>
+    function submit() {
+      let inputField = document.querySelector("input")
+      fetch("/submit", {
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json" 
+        },
+        "body": JSON.stringify({"url": inputField.value})
+      }).then(res => {
+        return res.json()
+      }).then(data => {
+        inputField.value = data.url
+      }).catch(err => {
+      })
+    } 
+
+
+
+    let timer
+    function copy() {
+      navigator.clipboard.writeText(document.querySelector("input").value)
+      .then(() => {
+        document.querySelector("p").style.display = "block"
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+          document.querySelector("p").style.display = "none"
+        }, 1000)
+      }) 
+    }
+  </script>
+</html>
